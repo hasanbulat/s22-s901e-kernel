@@ -16,5 +16,5 @@ Create Odin flashable tar (with Magisk Root)
 Credits
 -------
 
-- Based on original patches and src from https://github.com/mohammad92/android_kernel_samsung_sm8450
+- Thanks to original scripts, patches and src from https://github.com/mohammad92/android_kernel_samsung_sm8450
 
