@@ -97,9 +97,9 @@ build_kernel(){
   [ -e out/arch/arm64/boot/Image.gz ] && cp out/arch/arm64/boot/Image.gz $(pwd)/out/Image.gz
   if [ -e out/arch/arm64/boot/Image ]; then
     cp out/arch/arm64/boot/Image $(pwd)/out/Image
-
-    echo "${GREEN}***** Ready to Roar *****${STD}"
-    pause 'continue'
+    ls -lh $(pwd)/out/Image
+    ls -lh $(pwd)/out/Image.gz
+    #pause 'continue'
   else
     pause 'return to Main menu' 'Kernel STUCK in BUILD!, '
   fi
@@ -165,13 +165,5 @@ read_options(){
   esac
 }
 
-# Trap CTRL+C, CTRL+Z and quit singles
-#trap '' SIGINT SIGQUIT SIGTSTP
- 
-# Step # Main logic - infinite loop
-while true
-do
-  build_kernel
-  #show_menus
-  #read_options    
-done
+
+build_kernel

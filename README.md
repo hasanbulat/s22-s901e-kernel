@@ -8,13 +8,15 @@ Build kernel
 
 - press `ENTER` to download necessary build tools as prompted.
 
-Create Odin flashable tar (with Magisk Root)
--------------------------
 
-`./s901e.sh`
+Clean the out dir
+-----------------
+
+`./clean.sh`
+
 
 Credits
 -------
 
-- Thanks to original scripts, patches and src from https://github.com/mohammad92/android_kernel_samsung_sm8450
+- Thanks to the authors of the original scripts, patches and src from https://github.com/mohammad92/android_kernel_samsung_sm8450
 

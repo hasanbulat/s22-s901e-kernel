@@ -1,1 +1,1 @@
-rm -r android_kernel_samsung_sm8450/out
+cd android_kernel_samsung_sm8450 && clean.sh
