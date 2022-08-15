@@ -1,5 +1,5 @@
-s22-s901e-kernel
-================
+s22-s901e-kernel with root
+==========================
 
 Build kernel
 ------------
@@ -12,4 +12,9 @@ Create Odin flashable tar (with Magisk Root)
 -------------------------
 
 `./s901e.sh`
+
+Credits
+-------
+
+- Based on original patches and src from https://github.com/mohammad92/android_kernel_samsung_sm8450
 
