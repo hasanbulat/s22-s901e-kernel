@@ -34,7 +34,7 @@ pause(){
 clang(){
   if [ ! -d $PARENT_DIR/clang-r416183b ]; then
     pause 'clone Android Clang/LLVM Prebuilts'
-    git clone https://github.com/crdroidandroid/android_prebuilts_clang_host_linux-x86_clang-r416183b $PARENT_DIR/clang-r416183b
+    git clone --depth=1 https://github.com/crdroidandroid/android_prebuilts_clang_host_linux-x86_clang-r416183b $PARENT_DIR/clang-r416183b
     . $DIR/build_menu
   fi
 }
@@ -42,7 +42,7 @@ clang(){
 gas(){
   if [ ! -d $PARENT_DIR/gas/linux-x86 ]; then
     pause 'clone prebuilt binaries of GNU `as` (the assembler)'
-    git clone https://android.googlesource.com/platform/prebuilts/gas/linux-x86 $PARENT_DIR/gas/linux-x86
+    git clone --depth=1 https://android.googlesource.com/platform/prebuilts/gas/linux-x86 $PARENT_DIR/gas/linux-x86
     . $DIR/build_menu
   fi
 }
@@ -50,7 +50,7 @@ gas(){
 build_tools(){
   if [ ! -d $PARENT_DIR/build-tools ]; then
     pause 'clone prebuilt binaries of build tools'
-    git clone https://android.googlesource.com/platform/prebuilts/build-tools $PARENT_DIR/build-tools
+    git clone --depth=1 https://android.googlesource.com/platform/prebuilts/build-tools $PARENT_DIR/build-tools
     . $DIR/build_menu
   fi
 }
