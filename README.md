@@ -8,7 +8,7 @@ Build kernel
 
 - press `ENTER` to download necessary build tools as prompted.
 
-Create Odin flashable tar
+Create Odin flashable tar (with Magisk Root)
 -------------------------
 
 `./s901e.sh`
