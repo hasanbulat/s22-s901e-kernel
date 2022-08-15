@@ -22,4 +22,5 @@ cp image-new.img boot.img
 lz4 -B6 --content-size boot.img boot.img.lz4
 tar -H ustar -cf ${AZQ_TAR} boot.img.lz4
 cd ..
-echo "### DONE - ${AZQ_TAR} created"
+echo "### DONE - aik-3.8/${AZQ_TAR} created"
+ls -l aik-3.8/${AZQ_TAR}

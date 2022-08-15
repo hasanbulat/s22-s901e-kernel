@@ -10,6 +10,7 @@ Build kernel
 - select [1] Build kernel
 - select [1] waipio-gki
 - press `ENTER` to start the build process
+- press [4] to exit the build process
 
 Create SAMSUNG tar
 ------------------
