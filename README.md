@@ -1,5 +1,5 @@
-S22-s901e-kernel with root
-==========================
+S22-s901e-kernel with root, selinux permissive
+==============================================
 
 Build
 -----
