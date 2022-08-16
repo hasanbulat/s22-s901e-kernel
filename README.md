@@ -1,8 +1,8 @@
 S22-s901e-kernel with root
 ==========================
 
-Build kernel
-------------
+Build
+-----
 
 `./build.sh`
 
@@ -11,8 +11,8 @@ Build kernel
 - once phone has booted, enable adb and install the magisk apk from: https://github.com/topjohnwu/Magisk/releases 
 
 
-Clean the out dir
------------------
+Clean
+-----
 
 `./clean.sh`
 
