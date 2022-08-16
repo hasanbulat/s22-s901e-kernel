@@ -1,4 +1,4 @@
-s22-s901e-kernel with root
+S22-s901e-kernel with root
 ==========================
 
 Build kernel
@@ -7,6 +7,8 @@ Build kernel
 `./build.sh`
 
 - press `ENTER` to download necessary build tools as prompted.
+- it would finally build a tar file of the boot image, flash that to the S22 with Odin.
+- once phone has booted, enable adb and install the magisk apk from: https://github.com/topjohnwu/Magisk/releases 
 
 
 Clean the out dir
