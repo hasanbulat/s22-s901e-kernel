@@ -90,6 +90,7 @@ clean(){
 build_kernel(){
   variant
   echo "${GREEN}***** Compiling kernel *****${STD}"
+  rm -rf out/arch/arm64/boot/Image
   [ ! -d "out" ] && mkdir out
   make -j$(nproc) -C $(pwd) O=$(pwd)/out $KERNEL_MAKE_ENV afaneh_${VARIANT}_defconfig
   make -j$(nproc) -C $(pwd) O=$(pwd)/out $KERNEL_MAKE_ENV
@@ -101,6 +102,8 @@ build_kernel(){
     ls -lh $(pwd)/out/Image.gz
     #pause 'continue'
   else
+      echo 'build failed - abort'
+      exit 1
     pause 'return to Main menu' 'Kernel STUCK in BUILD!, '
   fi
 }
