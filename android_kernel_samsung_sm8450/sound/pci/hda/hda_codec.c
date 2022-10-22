@@ -3335,6 +3335,7 @@ int snd_hda_codec_build_pcms(struct hda_codec *codec)
 			continue; /* no fatal error */
 		}
 		cpcm->device = dev;
+		printk("is_pcm_rec calling snd_hda_attach_pcm_stream");
 		err =  snd_hda_attach_pcm_stream(bus, codec, cpcm);
 		if (err < 0) {
 			codec_err(codec,

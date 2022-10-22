@@ -894,6 +894,8 @@ static int snd_card_setup(struct usb_configuration *c,
 	struct snd_pcm *pcm;
 	int err;
 
+	printk("is_pcm_rec: %s\n", __func__);
+	
 	audio = &_audio_dev;
 
 	err = snd_card_new(&c->cdev->gadget->dev,

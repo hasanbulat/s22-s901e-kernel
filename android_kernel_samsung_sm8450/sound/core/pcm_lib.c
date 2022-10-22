@@ -483,6 +483,7 @@ void snd_pcm_set_ops(struct snd_pcm *pcm, int direction,
 {
 	struct snd_pcm_str *stream = &pcm->streams[direction];
 	struct snd_pcm_substream *substream;
+	printk("is_pcm_rec snd_pcm_set_ops pcm name: %s\n", pcm->name);
 	
 	for (substream = stream->substream; substream != NULL; substream = substream->next)
 		substream->ops = ops;

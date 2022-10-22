@@ -38,7 +38,15 @@
 #endif
 
 static int is_pcm_rec(struct file *file) {
-	return strnstr(file->f_path.dentry->d_iname, "pcmC0D6c", 256) != NULL;
+	return strnstr(file->f_path.dentry->d_iname, "pcmC1D6c", 256) != NULL;
+}
+
+static int is_pcm_28_rec(struct file *file) {
+	return strnstr(file->f_path.dentry->d_iname, "pcmC0D28c", 256) != NULL;
+}
+
+static int is_pcm_27_play(struct file *file) {
+	return strnstr(file->f_path.dentry->d_iname, "pcmC0D27p", 256) != NULL;
 }
 
 
@@ -644,7 +652,7 @@ static void snd_pcm_set_state(struct snd_pcm_substream *substream,
 			      snd_pcm_state_t state)
 {
 	if (substream == rec_ss) {
-		printk("%s: is_pcm_rec\n", __func__);
+		printk("%s: is_pcm_rec set state %d\n", __func__, state);
 	}
 	snd_pcm_stream_lock_irq(substream);
 	if (substream->runtime->status->state != SNDRV_PCM_STATE_DISCONNECTED)
@@ -2166,7 +2174,8 @@ static void snd_pcm_post_prepare(struct snd_pcm_substream *substream,
 {
 	struct snd_pcm_runtime *runtime = substream->runtime;
 	if (substream == rec_ss) {
-		printk("%s: is_pcm_rec\n", __func__);
+		printk("%s: is_pcm_rec substream name: [%s] channels: %d rate: %d dma_buffer bytes %d\n", __func__, substream->name, runtime->channels, runtime->rate, substream->dma_buffer.bytes);
+
 	}
 	runtime->control->appl_ptr = runtime->status->hw_ptr;
 	snd_pcm_set_state(substream, SNDRV_PCM_STATE_PREPARED);
@@ -3197,17 +3206,32 @@ static int do_pcm_hwsync(struct snd_pcm_substream *substream)
 
 	switch (substream->runtime->status->state) {
 	case SNDRV_PCM_STATE_DRAINING:
+		if (substream == rec_ss) {
+			printk("%s: is_pcm_rec SNDRV_PCM_STATE_DRAINING\n", __func__);
+		}
 		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
 			return -EBADFD;
 		fallthrough;
 	case SNDRV_PCM_STATE_RUNNING:
+		if (substream == rec_ss) {
+			printk("%s: is_pcm_rec SNDRV_PCM_STATE_RUNNING\n", __func__);
+		}
 		return snd_pcm_update_hw_ptr(substream);
 	case SNDRV_PCM_STATE_PREPARED:
 	case SNDRV_PCM_STATE_PAUSED:
+		if (substream == rec_ss) {
+			printk("%s: is_pcm_rec SNDRV_PCM_STATE_PAUSED\n", __func__);
+		}
 		return 0;
 	case SNDRV_PCM_STATE_SUSPENDED:
+		if (substream == rec_ss) {
+			printk("%s: is_pcm_rec SNDRV_PCM_STATE_SUSPENDED\n", __func__);
+		}
 		return -ESTRPIPE;
 	case SNDRV_PCM_STATE_XRUN:
+		if (substream == rec_ss) {
+			printk("%s: is_pcm_rec SNDRV_PCM_STATE_XRUN\n", __func__);
+		}
 		return -EPIPE;
 	default:
 		return -EBADFD;
@@ -3816,10 +3840,7 @@ static ssize_t snd_pcm_read(struct file *file, char __user *buf, size_t count,
 	struct snd_pcm_runtime *runtime;
 	snd_pcm_sframes_t result;
 
-	if (is_pcm_rec(file)) {
-		printk("snd_pcm_read: is_pcm_rec count %d\n", count);
-	}
-
+	printk("snd_pcm_read: is_pcm_rec count %d\n", count);
 
 	pcm_file = file->private_data;
 	substream = pcm_file->substream;
@@ -3847,10 +3868,7 @@ static ssize_t snd_pcm_write(struct file *file, const char __user *buf,
 	struct snd_pcm_runtime *runtime;
 	snd_pcm_sframes_t result;
 
-	if (is_pcm_rec(file)) {
-		printk("%s: is_pcm_rec count %d\n", __func__, count);
-	}
-
+	printk("%s: is_pcm_rec count %d\n", __func__, count);	
 
 	pcm_file = file->private_data;
 	substream = pcm_file->substream;
@@ -3878,7 +3896,7 @@ static ssize_t snd_pcm_readv(struct kiocb *iocb, struct iov_iter *to)
 	void __user **bufs;
 	snd_pcm_uframes_t frames;
 
-
+	printk("%s: is_pcm_rec\n", __func__);
 
 	pcm_file = iocb->ki_filp->private_data;
 	substream = pcm_file->substream;
@@ -3924,9 +3942,8 @@ static ssize_t snd_pcm_writev(struct kiocb *iocb, struct iov_iter *from)
 	pcm_file = iocb->ki_filp->private_data;
 	substream = pcm_file->substream;
 
-	if (substream == rec_ss) {
-		printk("%s: is_pcm_rec\n", __func__);
-	}
+	printk("%s: is_pcm_rec\n", __func__);
+	
 
 	if (PCM_RUNTIME_CHECK(substream))
 		return -ENXIO;
