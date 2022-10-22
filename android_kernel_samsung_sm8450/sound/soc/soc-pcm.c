@@ -223,6 +223,8 @@ void snd_soc_runtime_action(struct snd_soc_pcm_runtime *rtd,
 	struct snd_soc_dai *dai;
 	int i;
 
+	printk("%s: is_pcm_rec\n", __func__);
+
 	lockdep_assert_held(&rtd->card->pcm_mutex);
 
 	for_each_rtd_dais(rtd, i, dai)
@@ -245,6 +247,8 @@ bool snd_soc_runtime_ignore_pmdown_time(struct snd_soc_pcm_runtime *rtd)
 	bool ignore = true;
 	int i;
 
+	printk("%s: is_pcm_rec\n", __func__);
+
 	if (!rtd->pmdown_time || rtd->dai_link->ignore_pmdown_time)
 		return true;
 
@@ -265,6 +269,7 @@ int snd_soc_set_runtime_hwparams(struct snd_pcm_substream *substream,
 	const struct snd_pcm_hardware *hw)
 {
 	struct snd_pcm_runtime *runtime = substream->runtime;
+	printk("%s: is_pcm_rec\n", __func__);
 	runtime->hw.info = hw->info;
 	runtime->hw.formats = hw->formats;
 	runtime->hw.period_bytes_min = hw->period_bytes_min;
@@ -282,6 +287,8 @@ int dpcm_dapm_stream_event(struct snd_soc_pcm_runtime *fe, int dir,
 	int event)
 {
 	struct snd_soc_dpcm *dpcm;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	for_each_dpcm_be(fe, dir, dpcm) {
 
@@ -307,6 +314,8 @@ static int soc_pcm_apply_symmetry(struct snd_pcm_substream *substream,
 {
 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
 	int ret;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	if (soc_dai->rate && (soc_dai->driver->symmetric_rates ||
 				rtd->dai_link->symmetric_rates)) {
@@ -366,6 +375,8 @@ static int soc_pcm_params_symmetry(struct snd_pcm_substream *substream,
 	struct snd_soc_dai *dai;
 	struct snd_soc_dai *cpu_dai;
 	unsigned int rate, channels, sample_bits, symmetry, i;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	rate = params_rate(params);
 	channels = params_channels(params);
@@ -429,6 +440,8 @@ static bool soc_pcm_has_symmetry(struct snd_pcm_substream *substream)
 	struct snd_soc_dai *dai;
 	unsigned int symmetry, i;
 
+	printk("%s: is_pcm_rec\n", __func__);
+
 	symmetry = link->symmetric_rates ||
 		link->symmetric_channels ||
 		link->symmetric_samplebits;
@@ -446,6 +459,8 @@ static void soc_pcm_set_msb(struct snd_pcm_substream *substream, int bits)
 {
 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
 	int ret;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	if (!bits)
 		return;
@@ -465,6 +480,8 @@ static void soc_pcm_apply_msb(struct snd_pcm_substream *substream)
 	int stream = substream->stream;
 	int i;
 	unsigned int bits = 0, cpu_bits = 0;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	for_each_rtd_codec_dais(rtd, i, codec_dai) {
 		pcm_codec = snd_soc_dai_get_pcm_stream(codec_dai, stream);
@@ -513,6 +530,7 @@ int snd_soc_runtime_calc_hw(struct snd_soc_pcm_runtime *rtd,
 	unsigned int rates = UINT_MAX, cpu_rates = UINT_MAX;
 	u64 formats = ULLONG_MAX;
 	int i;
+	printk("%s: is_pcm_rec\n", __func__);
 
 	/* first calculate min/max only for CPUs in the DAI link */
 	for_each_rtd_cpu_dais(rtd, i, cpu_dai) {
@@ -596,6 +614,7 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
 	u64 formats = hw->formats;
 
+	printk("%s: is_pcm_rec\n", __func__);
 	/*
 	 * At least one CPU and one CODEC should match. Otherwise, we should
 	 * have bailed out on a higher level, since there would be no CPU or
@@ -612,6 +631,8 @@ static int soc_pcm_components_open(struct snd_pcm_substream *substream)
 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
 	struct snd_soc_component *component;
 	int i, ret = 0;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	for_each_rtd_components(rtd, i, component) {
 		ret = snd_soc_component_module_get_when_open(component, substream);
@@ -633,6 +654,8 @@ static int soc_pcm_components_close(struct snd_pcm_substream *substream,
 	struct snd_soc_component *component;
 	int i, r, ret = 0;
 
+	printk("%s: is_pcm_rec\n", __func__);
+
 	for_each_rtd_components(rtd, i, component) {
 		r = snd_soc_component_close(component, substream, rollback);
 		if (r < 0)
@@ -650,6 +673,8 @@ static int soc_pcm_clean(struct snd_pcm_substream *substream, int rollback)
 	struct snd_soc_component *component;
 	struct snd_soc_dai *dai;
 	int i;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
 
@@ -684,6 +709,7 @@ static int soc_pcm_clean(struct snd_pcm_substream *substream, int rollback)
  */
 static int soc_pcm_close(struct snd_pcm_substream *substream)
 {
+	printk("%s: is_pcm_rec\n", __func__);
 	return soc_pcm_clean(substream, 0);
 }
 
@@ -701,6 +727,8 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
 	const char *codec_dai_name = "multicodec";
 	const char *cpu_dai_name = "multicpu";
 	int i, ret = 0;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	for_each_rtd_components(rtd, i, component)
 		pinctrl_pm_select_default_state(component->dev);
@@ -797,6 +825,7 @@ pm_err:
 
 static void codec2codec_close_delayed_work(struct snd_soc_pcm_runtime *rtd)
 {
+	printk("%s: is_pcm_rec\n", __func__);
 	/*
 	 * Currently nothing to do for c2c links
 	 * Since c2c links are internal nodes in the DAPM graph and
@@ -815,6 +844,8 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
 	struct snd_soc_dai *dai;
 	int i, ret = 0;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
 
@@ -856,6 +887,8 @@ static void soc_pcm_codec_params_fixup(struct snd_pcm_hw_params *params,
 	struct snd_interval *interval;
 	int channels = hweight_long(mask);
 
+	printk("%s: is_pcm_rec\n", __func__);
+
 	interval = hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
 	interval->min = channels;
 	interval->max = channels;
@@ -875,6 +908,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
 	struct snd_soc_dai *codec_dai;
 	int i, ret = 0;
 
+	printk("%s: is_pcm_rec\n", __func__);
 	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
 
 	ret = soc_pcm_params_symmetry(substream, params);
@@ -1001,6 +1035,8 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
 	struct snd_soc_dai *dai;
 	int i;
 
+	printk("%s: is_pcm_rec\n", __func__);
+
 	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
 
 	/* clear the corresponding DAIs parameters when going to be inactive */
@@ -1038,6 +1074,8 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
 static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
 {
 	int ret = -EINVAL;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	switch (cmd) {
 	case SNDRV_PCM_TRIGGER_START:
@@ -1088,6 +1126,8 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
 	snd_pcm_sframes_t cpu_delay = 0;
 	int i;
 
+	printk("%s: is_pcm_rec\n", __func__);
+
 	/* clearing the previous total delay */
 	runtime->delay = 0;
 
@@ -1119,6 +1159,8 @@ static int dpcm_be_connect(struct snd_soc_pcm_runtime *fe,
 {
 	struct snd_soc_dpcm *dpcm;
 	unsigned long flags;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	/* only add new dpcms */
 	for_each_dpcm_be(fe, stream, dpcm) {
@@ -1155,6 +1197,8 @@ static void dpcm_be_reparent(struct snd_soc_pcm_runtime *fe,
 	struct snd_soc_dpcm *dpcm;
 	struct snd_pcm_substream *fe_substream, *be_substream;
 
+	printk("%s: is_pcm_rec\n", __func__);
+
 	/* reparent if BE is connected to other FEs */
 	if (!be->dpcm[stream].users)
 		return;
@@ -1181,6 +1225,8 @@ void dpcm_be_disconnect(struct snd_soc_pcm_runtime *fe, int stream)
 {
 	struct snd_soc_dpcm *dpcm, *d;
 	unsigned long flags;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	for_each_dpcm_be_safe(fe, stream, dpcm, d) {
 		dev_dbg(fe->dev, "ASoC: BE %s disconnect check for %s\n",
@@ -1216,6 +1262,7 @@ static struct snd_soc_pcm_runtime *dpcm_get_be(struct snd_soc_card *card,
 	struct snd_soc_dai *dai;
 	int i;
 
+	printk("%s: is_pcm_rec\n", __func__);
 	dev_dbg(card->dev, "ASoC: find BE for widget %s\n", widget->name);
 
 	for_each_card_rtds(card, be) {
@@ -1244,6 +1291,8 @@ static int widget_in_list(struct snd_soc_dapm_widget_list *list,
 	struct snd_soc_dapm_widget *w;
 	int i;
 
+	printk("%s: is_pcm_rec\n", __func__);
+
 	for_each_dapm_widgets(list, i, w)
 		if (widget == w)
 			return 1;
@@ -1257,6 +1306,8 @@ static bool dpcm_end_walk_at_be(struct snd_soc_dapm_widget *widget,
 	struct snd_soc_card *card = widget->dapm->card;
 	struct snd_soc_pcm_runtime *rtd;
 	int stream;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	/* adjust dir to stream */
 	if (dir == SND_SOC_DAPM_DIR_OUT)
@@ -1278,6 +1329,8 @@ int dpcm_path_get(struct snd_soc_pcm_runtime *fe,
 	int paths;
 	bool chaining = false;
 
+	printk("%s: is_pcm_rec\n", __func__);
+
 	if (fe->num_cpus > 1) {
 		dev_err(fe->dev,
 			"%s doesn't support Multi CPU yet\n", __func__);
@@ -1298,6 +1351,7 @@ int dpcm_path_get(struct snd_soc_pcm_runtime *fe,
 
 void dpcm_path_put(struct snd_soc_dapm_widget_list **list)
 {
+	printk("%s: is_pcm_rec\n", __func__);
 	snd_soc_dapm_dai_free_widgets(list);
 }
 
@@ -1307,6 +1361,8 @@ static bool dpcm_be_is_active(struct snd_soc_dpcm *dpcm, int stream,
 	struct snd_soc_dapm_widget *widget;
 	struct snd_soc_dai *dai;
 	unsigned int i;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	/* is there a valid DAI widget for this BE */
 	for_each_rtd_dais(dpcm->be, i, dai) {
@@ -1328,6 +1384,8 @@ static int dpcm_prune_paths(struct snd_soc_pcm_runtime *fe, int stream,
 {
 	struct snd_soc_dpcm *dpcm;
 	int prune = 0;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	/* Destroy any old FE <--> BE connections */
 	for_each_dpcm_be(fe, stream, dpcm) {
@@ -1354,6 +1412,8 @@ static int dpcm_add_paths(struct snd_soc_pcm_runtime *fe, int stream,
 	struct snd_soc_pcm_runtime *be;
 	struct snd_soc_dapm_widget *widget;
 	int i, new = 0, err;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	/* Create any new FE <--> BE connections */
 	for_each_dapm_widgets(list, i, widget) {
@@ -1408,6 +1468,7 @@ static int dpcm_add_paths(struct snd_soc_pcm_runtime *fe, int stream,
 int dpcm_process_paths(struct snd_soc_pcm_runtime *fe,
 	int stream, struct snd_soc_dapm_widget_list **list, int new)
 {
+	printk("%s: is_pcm_rec\n", __func__);
 	if (new)
 		return dpcm_add_paths(fe, stream, list);
 	else
@@ -1418,6 +1479,8 @@ void dpcm_clear_pending_state(struct snd_soc_pcm_runtime *fe, int stream)
 {
 	struct snd_soc_dpcm *dpcm;
 	unsigned long flags;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
 	for_each_dpcm_be(fe, stream, dpcm)
@@ -1431,6 +1494,7 @@ static void dpcm_be_dai_startup_unwind(struct snd_soc_pcm_runtime *fe,
 {
 	struct snd_soc_dpcm *dpcm;
 
+	printk("%s: is_pcm_rec\n", __func__);
 	/* disable any enabled and non active backends */
 	for_each_dpcm_be(fe, stream, dpcm) {
 
@@ -1459,6 +1523,8 @@ int dpcm_be_dai_startup(struct snd_soc_pcm_runtime *fe, int stream)
 {
 	struct snd_soc_dpcm *dpcm;
 	int err, count = 0;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	/* only startup BE DAIs that are either sinks or sources to this FE DAI */
 	for_each_dpcm_be(fe, stream, dpcm) {
@@ -1545,6 +1611,8 @@ unwind:
 static void dpcm_init_runtime_hw(struct snd_pcm_runtime *runtime,
 				 struct snd_soc_pcm_stream *stream)
 {
+	printk("%s: is_pcm_rec\n", __func__);
+
 	runtime->hw.rate_min = stream->rate_min;
 	runtime->hw.rate_max = min_not_zero(stream->rate_max, UINT_MAX);
 	runtime->hw.channels_min = stream->channels_min;
@@ -1563,6 +1631,8 @@ static void dpcm_runtime_merge_format(struct snd_pcm_substream *substream,
 	struct snd_soc_dpcm *dpcm;
 	struct snd_soc_dai *dai;
 	int stream = substream->stream;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	if (!fe->dai_link->dpcm_merged_format)
 		return;
@@ -1599,6 +1669,8 @@ static void dpcm_runtime_merge_chan(struct snd_pcm_substream *substream,
 	struct snd_soc_pcm_runtime *fe = asoc_substream_to_rtd(substream);
 	struct snd_soc_dpcm *dpcm;
 	int stream = substream->stream;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	if (!fe->dai_link->dpcm_merged_chan)
 		return;
@@ -1655,6 +1727,8 @@ static void dpcm_runtime_merge_rate(struct snd_pcm_substream *substream,
 	struct snd_soc_dpcm *dpcm;
 	int stream = substream->stream;
 
+	printk("%s: is_pcm_rec\n", __func__);
+
 	if (!fe->dai_link->dpcm_merged_rate)
 		return;
 
@@ -1693,6 +1767,8 @@ static void dpcm_set_fe_runtime(struct snd_pcm_substream *substream)
 	struct snd_soc_dai *cpu_dai;
 	int i;
 
+	printk("%s: is_pcm_rec\n", __func__);
+
 	for_each_rtd_cpu_dais(rtd, i, cpu_dai) {
 		/*
 		 * Skip CPUs which don't support the current stream
@@ -1726,6 +1802,8 @@ static void dpcm_set_fe_update_state(struct snd_soc_pcm_runtime *fe,
 	struct snd_pcm_substream *substream =
 		snd_soc_dpcm_get_substream(fe, stream);
 
+	printk("%s: is_pcm_rec\n", __func__);
+
 	snd_pcm_stream_lock_irq(substream);
 	if (state == SND_SOC_DPCM_UPDATE_NO && fe->dpcm[stream].trigger_pending) {
 		dpcm_fe_dai_do_trigger(substream,
@@ -1744,6 +1822,8 @@ static int dpcm_apply_symmetry(struct snd_pcm_substream *fe_substream,
 	struct snd_soc_dai *fe_cpu_dai;
 	int err = 0;
 	int i;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	/* apply symmetry for FE */
 	if (soc_pcm_has_symmetry(fe_substream))
@@ -1797,6 +1877,8 @@ static int dpcm_fe_dai_startup(struct snd_pcm_substream *fe_substream)
 	struct snd_pcm_runtime *runtime = fe_substream->runtime;
 	int stream = fe_substream->stream, ret = 0;
 
+	printk("%s: is_pcm_rec\n", __func__);
+
 	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_FE);
 
 	ret = dpcm_be_dai_startup(fe, stream);
@@ -1835,6 +1917,8 @@ be_err:
 int dpcm_be_dai_shutdown(struct snd_soc_pcm_runtime *fe, int stream)
 {
 	struct snd_soc_dpcm *dpcm;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	/* only shutdown BEs that are either sinks or sources to this FE DAI */
 	for_each_dpcm_be(fe, stream, dpcm) {
@@ -1877,6 +1961,9 @@ static int dpcm_fe_dai_shutdown(struct snd_pcm_substream *substream)
 	struct snd_soc_pcm_runtime *fe = asoc_substream_to_rtd(substream);
 	int stream = substream->stream;
 
+	printk("%s: is_pcm_rec\n", __func__);
+
+
 	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_FE);
 
 	/* shutdown the BEs */
@@ -1898,6 +1985,8 @@ static int dpcm_fe_dai_shutdown(struct snd_pcm_substream *substream)
 int dpcm_be_dai_hw_free(struct snd_soc_pcm_runtime *fe, int stream)
 {
 	struct snd_soc_dpcm *dpcm;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	/* only hw_params backends that are either sinks or sources
 	 * to this frontend DAI */
@@ -1943,6 +2032,8 @@ static int dpcm_fe_dai_hw_free(struct snd_pcm_substream *substream)
 	struct snd_soc_pcm_runtime *fe = asoc_substream_to_rtd(substream);
 	int err, stream = substream->stream;
 
+	printk("%s: is_pcm_rec\n", __func__);
+
 	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
 	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_FE);
 
@@ -1969,6 +2060,8 @@ int dpcm_be_dai_hw_params(struct snd_soc_pcm_runtime *fe, int stream)
 {
 	struct snd_soc_dpcm *dpcm;
 	int ret;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	for_each_dpcm_be(fe, stream, dpcm) {
 
@@ -2048,6 +2141,8 @@ static int dpcm_fe_dai_hw_params(struct snd_pcm_substream *substream,
 	struct snd_soc_pcm_runtime *fe = asoc_substream_to_rtd(substream);
 	int ret, stream = substream->stream;
 
+	printk("%s: is_pcm_rec\n", __func__);
+
 	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
 	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_FE);
 
@@ -2082,6 +2177,8 @@ static int dpcm_do_trigger(struct snd_soc_dpcm *dpcm,
 {
 	int ret;
 
+	printk("%s: is_pcm_rec\n", __func__);
+
 	dev_dbg(dpcm->be->dev, "ASoC: trigger BE %s cmd %d\n",
 			dpcm->be->dai_link->name, cmd);
 
@@ -2097,6 +2194,8 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
 {
 	struct snd_soc_dpcm *dpcm;
 	int ret = 0;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	for_each_dpcm_be(fe, stream, dpcm) {
 
@@ -2194,6 +2293,8 @@ static int dpcm_dai_trigger_fe_be(struct snd_pcm_substream *substream,
 	struct snd_soc_pcm_runtime *fe = asoc_substream_to_rtd(substream);
 	int ret;
 
+	printk("%s: is_pcm_rec\n", __func__);
+
 	/* call trigger on the frontend before the backend. */
 	if (fe_first) {
 		dev_dbg(fe->dev, "ASoC: pre trigger FE %s cmd %d\n",
@@ -2226,6 +2327,8 @@ static int dpcm_fe_dai_do_trigger(struct snd_pcm_substream *substream, int cmd)
 	int stream = substream->stream;
 	int ret = 0;
 	enum snd_soc_dpcm_trigger trigger = fe->dai_link->trigger[stream];
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_FE;
 
@@ -2312,6 +2415,8 @@ static int dpcm_fe_dai_trigger(struct snd_pcm_substream *substream, int cmd)
 	struct snd_soc_pcm_runtime *fe = asoc_substream_to_rtd(substream);
 	int stream = substream->stream;
 
+	printk("%s: is_pcm_rec\n", __func__);
+
 	/* if FE's runtime_update is already set, we're in race;
 	 * process this trigger later at exit
 	 */
@@ -2329,6 +2434,7 @@ int dpcm_be_dai_prepare(struct snd_soc_pcm_runtime *fe, int stream)
 	struct snd_soc_dpcm *dpcm;
 	int ret = 0;
 
+	printk("%s: is_pcm_rec\n", __func__);
 	for_each_dpcm_be(fe, stream, dpcm) {
 
 		struct snd_soc_pcm_runtime *be = dpcm->be;
@@ -2364,6 +2470,8 @@ static int dpcm_fe_dai_prepare(struct snd_pcm_substream *substream)
 {
 	struct snd_soc_pcm_runtime *fe = asoc_substream_to_rtd(substream);
 	int stream = substream->stream, ret = 0;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
 
@@ -2409,6 +2517,8 @@ static int dpcm_run_update_shutdown(struct snd_soc_pcm_runtime *fe, int stream)
 	enum snd_soc_dpcm_trigger trigger = fe->dai_link->trigger[stream];
 	int err;
 
+	printk("%s: is_pcm_rec\n", __func__);
+
 	dev_dbg(fe->dev, "ASoC: runtime %s close on FE %s\n",
 			stream ? "capture" : "playback", fe->dai_link->name);
 
@@ -2451,6 +2561,8 @@ static int dpcm_run_update_startup(struct snd_soc_pcm_runtime *fe, int stream)
 	enum snd_soc_dpcm_trigger trigger = fe->dai_link->trigger[stream];
 	int ret;
 	unsigned long flags;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	dev_dbg(fe->dev, "ASoC: runtime %s open on FE %s\n",
 			stream ? "capture" : "playback", fe->dai_link->name);
@@ -2538,6 +2650,8 @@ static int soc_dpcm_fe_runtime_update(struct snd_soc_pcm_runtime *fe, int new)
 	int count, paths;
 	int ret;
 
+	printk("%s: is_pcm_rec\n", __func__);
+
 	if (!fe->dai_link->dynamic)
 		return 0;
 
@@ -2606,6 +2720,8 @@ int snd_soc_dpcm_runtime_update(struct snd_soc_card *card)
 	struct snd_soc_pcm_runtime *fe;
 	int ret = 0;
 
+	printk("%s: is_pcm_rec\n", __func__);
+
 	mutex_lock_nested(&card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
 	/* shutdown all old paths first */
 	for_each_card_rtds(card, fe) {
@@ -2633,6 +2749,8 @@ static void dpcm_fe_dai_cleanup(struct snd_pcm_substream *fe_substream)
 	struct snd_soc_dpcm *dpcm;
 	int stream = fe_substream->stream;
 
+	printk("%s: is_pcm_rec\n", __func__);
+
 	/* mark FE's links ready to prune */
 	for_each_dpcm_be(fe, stream, dpcm)
 		dpcm->state = SND_SOC_DPCM_LINK_STATE_FREE;
@@ -2646,6 +2764,8 @@ static int dpcm_fe_dai_close(struct snd_pcm_substream *fe_substream)
 {
 	struct snd_soc_pcm_runtime *fe = asoc_substream_to_rtd(fe_substream);
 	int ret;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
 	ret = dpcm_fe_dai_shutdown(fe_substream);
@@ -2662,6 +2782,8 @@ static int dpcm_fe_dai_open(struct snd_pcm_substream *fe_substream)
 	struct snd_soc_dapm_widget_list *list;
 	int ret;
 	int stream = fe_substream->stream;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
 	fe->dpcm[stream].runtime = fe_substream->runtime;
@@ -2699,6 +2821,8 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
 	int ret = 0, playback = 0, capture = 0;
 	int stream;
 	int i;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	if (rtd->dai_link->dynamic && rtd->num_cpus > 1) {
 		dev_err(rtd->dev,
@@ -2889,6 +3013,7 @@ out:
 /* is the current PCM operation for this FE ? */
 int snd_soc_dpcm_fe_can_update(struct snd_soc_pcm_runtime *fe, int stream)
 {
+	printk("%s: is_pcm_rec\n", __func__);
 	if (fe->dpcm[stream].runtime_update == SND_SOC_DPCM_UPDATE_FE)
 		return 1;
 	return 0;
@@ -2899,6 +3024,8 @@ EXPORT_SYMBOL_GPL(snd_soc_dpcm_fe_can_update);
 int snd_soc_dpcm_be_can_update(struct snd_soc_pcm_runtime *fe,
 		struct snd_soc_pcm_runtime *be, int stream)
 {
+
+	printk("%s: is_pcm_rec\n", __func__);
 	if ((fe->dpcm[stream].runtime_update == SND_SOC_DPCM_UPDATE_FE) ||
 	   ((fe->dpcm[stream].runtime_update == SND_SOC_DPCM_UPDATE_BE) &&
 		  be->dpcm[stream].runtime_update))
@@ -2911,6 +3038,7 @@ EXPORT_SYMBOL_GPL(snd_soc_dpcm_be_can_update);
 struct snd_pcm_substream *
 	snd_soc_dpcm_get_substream(struct snd_soc_pcm_runtime *be, int stream)
 {
+	printk("%s: is_pcm_rec\n", __func__);
 	return be->pcm->streams[stream].substream;
 }
 EXPORT_SYMBOL_GPL(snd_soc_dpcm_get_substream);
@@ -2926,6 +3054,8 @@ static int snd_soc_dpcm_check_state(struct snd_soc_pcm_runtime *fe,
 	int ret = 1;
 	unsigned long flags;
 	int i;
+
+	printk("%s: is_pcm_rec\n", __func__);
 
 	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
 	for_each_dpcm_fe(be, stream, dpcm) {
@@ -2954,6 +3084,7 @@ static int snd_soc_dpcm_check_state(struct snd_soc_pcm_runtime *fe,
 int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
 		struct snd_soc_pcm_runtime *be, int stream)
 {
+	printk("%s: is_pcm_rec\n", __func__);
 	const enum snd_soc_dpcm_state state[] = {
 		SND_SOC_DPCM_STATE_START,
 		SND_SOC_DPCM_STATE_PAUSED,
@@ -2971,6 +3102,7 @@ EXPORT_SYMBOL_GPL(snd_soc_dpcm_can_be_free_stop);
 int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
 		struct snd_soc_pcm_runtime *be, int stream)
 {
+	printk("%s: is_pcm_rec\n", __func__);
 	const enum snd_soc_dpcm_state state[] = {
 		SND_SOC_DPCM_STATE_START,
 		SND_SOC_DPCM_STATE_PAUSED,

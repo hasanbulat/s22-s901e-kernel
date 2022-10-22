@@ -3656,9 +3656,8 @@ static int snd_pcm_common_ioctl(struct file *file,
 	char buf[buf_sz];
 	buf[0] = 0;
 
-	if (is_pcm_rec(file)) {
-		printk("snd_pcm_common_ioctl: is_pcm_rec cmd %d\n", cmd);
-	}
+	printk("snd_pcm_common_ioctl: is_pcm_rec cmd 0x%x\n", cmd);
+
 
 	if (PCM_RUNTIME_CHECK(substream))
 		return -ENXIO;
@@ -3669,57 +3668,81 @@ static int snd_pcm_common_ioctl(struct file *file,
 
 	switch (cmd) {
 	case SNDRV_PCM_IOCTL_PVERSION:
+			printk("snd_pcm_common_ioctl switch: _SNDRV_PCM_IOCTL_PVERSION\n", cmd);
+
 		return put_user(SNDRV_PCM_VERSION, (int __user *)arg) ? -EFAULT : 0;
 	case SNDRV_PCM_IOCTL_INFO:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_INFO\n", cmd);
 		return snd_pcm_info_user(substream, arg);
 	case SNDRV_PCM_IOCTL_TSTAMP:	/* just for compatibility */
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_TSTAMP\n", cmd);
 		return 0;
 	case SNDRV_PCM_IOCTL_TTSTAMP:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_TTSTAMP\n", cmd);
 		return snd_pcm_tstamp(substream, arg);
 	case SNDRV_PCM_IOCTL_USER_PVERSION:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_USER_PVERSION\n", cmd);
 		if (get_user(pcm_file->user_pversion,
 			     (unsigned int __user *)arg))
 			return -EFAULT;
 		return 0;
 	case SNDRV_PCM_IOCTL_HW_REFINE:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_HW_REFINE\n", cmd);
 		return snd_pcm_hw_refine_user(substream, arg);
 	case SNDRV_PCM_IOCTL_HW_PARAMS:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_HW_PARAMS\n", cmd);
 		return snd_pcm_hw_params_user(substream, arg);
 	case SNDRV_PCM_IOCTL_HW_FREE:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_HW_FREE\n", cmd);
 		return snd_pcm_hw_free(substream);
 	case SNDRV_PCM_IOCTL_SW_PARAMS:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_SW_PARAMS\n", cmd);
 		return snd_pcm_sw_params_user(substream, arg);
 	case SNDRV_PCM_IOCTL_STATUS32:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_STATUS32\n", cmd);
 		return snd_pcm_status_user32(substream, arg, false);
 	case SNDRV_PCM_IOCTL_STATUS_EXT32:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_STATUS_EXT32\n", cmd);
 		return snd_pcm_status_user32(substream, arg, true);
 	case SNDRV_PCM_IOCTL_STATUS64:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_STATUS64\n", cmd);
 		return snd_pcm_status_user64(substream, arg, false);
 	case SNDRV_PCM_IOCTL_STATUS_EXT64:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_STATUS_EXT64\n", cmd);
 		return snd_pcm_status_user64(substream, arg, true);
 	case SNDRV_PCM_IOCTL_CHANNEL_INFO:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_CHANNEL_INFO\n", cmd);
 		return snd_pcm_channel_info_user(substream, arg);
 	case SNDRV_PCM_IOCTL_PREPARE:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_PREPARE\n", cmd);
 		//printk("SNDRV_PCM_IOCTL_PREPAREnakub0 d_iname: %s, is_pcm_rec(file): %d\n", file->f_path.dentry->d_iname, is_pcm_rec(file));
 		return snd_pcm_prepare(substream, file);
 	case SNDRV_PCM_IOCTL_RESET:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_RESET\n", cmd);
 		return snd_pcm_reset(substream);
 	case SNDRV_PCM_IOCTL_START:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_START\n", cmd);
 
 		return snd_pcm_start_lock_irq(substream);		
 	case SNDRV_PCM_IOCTL_LINK:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_LINK\n", cmd);
 
 		return snd_pcm_link(substream, (int)(unsigned long) arg);
 	case SNDRV_PCM_IOCTL_UNLINK:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_UNLINK\n", cmd);
 		return snd_pcm_unlink(substream);
 	case SNDRV_PCM_IOCTL_RESUME:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_RESUME\n", cmd);
 		return snd_pcm_resume(substream);
 	case SNDRV_PCM_IOCTL_XRUN:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_XRUN\n", cmd);
 		return snd_pcm_xrun(substream);
 	case SNDRV_PCM_IOCTL_HWSYNC:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_HWSYNC\n", cmd);
 		return snd_pcm_hwsync(substream);
 	case SNDRV_PCM_IOCTL_DELAY:
 	{
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_DELAY\n", cmd);
 		snd_pcm_sframes_t delay;
 		snd_pcm_sframes_t __user *res = arg;
 		int err;
@@ -3732,33 +3755,47 @@ static int snd_pcm_common_ioctl(struct file *file,
 		return 0;
 	}
 	case __SNDRV_PCM_IOCTL_SYNC_PTR32:
+			printk("snd_pcm_common_ioctl switch: __SNDRV_PCM_IOCTL_SYNC_PTR32\n", cmd);
 		return snd_pcm_ioctl_sync_ptr_compat(substream, arg);
 	case __SNDRV_PCM_IOCTL_SYNC_PTR64:
+			printk("snd_pcm_common_ioctl switch: __SNDRV_PCM_IOCTL_SYNC_PTR64\n", cmd);
 		return snd_pcm_sync_ptr(substream, arg);
 #ifdef CONFIG_SND_SUPPORT_OLD_API
 	case SNDRV_PCM_IOCTL_HW_REFINE_OLD:
+			printk("snd_pcm_common_ioctl switch: CONFIG_SND_SUPPORT_OLD_API\n", cmd);
 		return snd_pcm_hw_refine_old_user(substream, arg);
 	case SNDRV_PCM_IOCTL_HW_PARAMS_OLD:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_HW_PARAMS_OLD\n", cmd);
 		return snd_pcm_hw_params_old_user(substream, arg);
 #endif
 	case SNDRV_PCM_IOCTL_DRAIN:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_DRAIN\n", cmd);
 		return snd_pcm_drain(substream, file);
 	case SNDRV_PCM_IOCTL_DROP:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_DROP\n", cmd);
 		//printk("SNDRV_PCM_IOCTL_DROP1nakub sstream number: %d name: %s stream: %d", substream->number, substream->name, substream->stream);
 		return snd_pcm_drop(substream);
 	case SNDRV_PCM_IOCTL_PAUSE:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_PAUSE\n", cmd);
 		return snd_pcm_pause_lock_irq(substream, (unsigned long)arg);
 	case SNDRV_PCM_IOCTL_WRITEI_FRAMES:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_WRITEI_FRAMES\n", cmd);
 	case SNDRV_PCM_IOCTL_READI_FRAMES:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_READI_FRAMES\n", cmd);
 		return snd_pcm_xferi_frames_ioctl(substream, arg);
 	case SNDRV_PCM_IOCTL_WRITEN_FRAMES:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_WRITEN_FRAMES\n", cmd);
 	case SNDRV_PCM_IOCTL_READN_FRAMES:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_READN_FRAMES\n", cmd);
 		return snd_pcm_xfern_frames_ioctl(substream, arg);
 	case SNDRV_PCM_IOCTL_REWIND:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_REWIND\n", cmd);
 		return snd_pcm_rewind_ioctl(substream, arg);
 	case SNDRV_PCM_IOCTL_FORWARD:
+			printk("snd_pcm_common_ioctl switch: SNDRV_PCM_IOCTL_FORWARD\n", cmd);
 		return snd_pcm_forward_ioctl(substream, arg);
 	}
+	printk("snd_pcm_common_ioctl switch: unknown ioctl = 0x%x\n", cmd);
 	pcm_dbg(substream->pcm, "unknown ioctl = 0x%x\n", cmd);
 	return -ENOTTY;
 }

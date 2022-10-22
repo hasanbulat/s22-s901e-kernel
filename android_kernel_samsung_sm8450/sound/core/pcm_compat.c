@@ -566,6 +566,8 @@ static long snd_pcm_ioctl_compat(struct file *file, unsigned int cmd, unsigned l
 	struct snd_pcm_substream *substream;
 	void __user *argp = compat_ptr(arg);
 
+	printk("snd_pcm_common_ioctl: is_pcm_rec cmd 0x%x\n", cmd);
+
 	pcm_file = file->private_data;
 	if (! pcm_file)
 		return -ENOTTY;
