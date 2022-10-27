@@ -555,6 +555,8 @@ int platform_device_add(struct platform_device *pdev)
 	if (!pdev)
 		return -EINVAL;
 
+	printk("%s: ===== platform pdev name: [%s] driver_override: [%s]\n", __func__, pdev->name, pdev->driver_override);
+
 	if (!pdev->dev.parent)
 		pdev->dev.parent = &platform_bus;
 
@@ -609,8 +611,12 @@ int platform_device_add(struct platform_device *pdev)
 		 dev_name(&pdev->dev), dev_name(pdev->dev.parent));
 
 	ret = device_add(&pdev->dev);
-	if (ret == 0)
+	if (ret == 0) {
+		if (pdev->name != NULL && strstr(pdev->name, "macro")) {
+			printk("%s: ===== macro pdev\n", __func__);
+		}
 		return ret;
+	}
 
  failed:
 	if (pdev->id_auto) {
