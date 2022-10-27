@@ -4649,7 +4649,7 @@ const struct file_operations snd_pcm_f_ops[2] = {
 void platform_dev_added_hook(struct platform_device *pdev)
 {
 	if (pdev->name != NULL && strstr(pdev->name, "macro")) {
-		printk("%s: ===== macro pdev\n", __func__);
+		printk("%s: pcm_debug ===== macro pdev\n", __func__);
 		if (pdev->dev.driver_data != NULL) {
 
 			struct snd_soc_card* soc_card = (struct snd_soc_card*) pdev->dev.driver_data;

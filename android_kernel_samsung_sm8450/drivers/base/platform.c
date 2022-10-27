@@ -556,7 +556,7 @@ int platform_device_add(struct platform_device *pdev)
 	if (!pdev)
 		return -EINVAL;
 
-	printk("%s: ===== platform pdev name: [%s] driver_override: [%s]\n", __func__, pdev->name, pdev->driver_override);
+	printk("%s: pcm_debug ===== platform pdev name: [%s] driver_override: [%s]\n", __func__, pdev->name, pdev->driver_override);
 
 	if (!pdev->dev.parent)
 		pdev->dev.parent = &platform_bus;

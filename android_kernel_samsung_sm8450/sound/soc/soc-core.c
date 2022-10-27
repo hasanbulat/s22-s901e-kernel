@@ -197,6 +197,7 @@ DEFINE_SHOW_ATTRIBUTE(component_list);
 
 static void soc_init_card_debugfs(struct snd_soc_card *card)
 {
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
 	card->debugfs_card_root = debugfs_create_dir(card->name,
 						     snd_soc_debugfs_root);
 
@@ -208,6 +209,7 @@ static void soc_init_card_debugfs(struct snd_soc_card *card)
 
 static void soc_cleanup_card_debugfs(struct snd_soc_card *card)
 {
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
 	debugfs_remove_recursive(card->debugfs_card_root);
 	card->debugfs_card_root = NULL;
 }
@@ -242,11 +244,14 @@ static inline void soc_cleanup_component_debugfs(
 
 static inline void soc_init_card_debugfs(struct snd_soc_card *card)
 {
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
 }
 
 static inline void soc_cleanup_card_debugfs(struct snd_soc_card *card)
 {
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
 }
+
 
 static inline void snd_soc_debugfs_init(void)
 {
@@ -349,6 +354,8 @@ struct snd_soc_pcm_runtime
 {
 	struct snd_soc_pcm_runtime *rtd;
 
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
+
 	for_each_card_rtds(card, rtd) {
 		if (rtd->dai_link == dai_link)
 			return rtd;
@@ -436,6 +443,8 @@ static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
 	int ret;
 	int stream;
 
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
+
 	/*
 	 * for rtd->dev
 	 */
@@ -516,6 +525,8 @@ static void snd_soc_flush_all_delayed_work(struct snd_soc_card *card)
 {
 	struct snd_soc_pcm_runtime *rtd;
 
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
+
 	for_each_card_rtds(card, rtd)
 		flush_delayed_work(&rtd->delayed_work);
 }
@@ -529,6 +540,8 @@ int snd_soc_suspend(struct device *dev)
 	struct snd_soc_pcm_runtime *rtd;
 	int playback = SNDRV_PCM_STREAM_PLAYBACK;
 	int i;
+
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
 
 	/* If the card is not initialized yet there is nothing to do */
 	if (!card->instantiated)
@@ -653,6 +666,8 @@ static void soc_resume_deferred(struct work_struct *work)
 	struct snd_soc_component *component;
 	int i;
 
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
+
 	/*
 	 * our power state is still SNDRV_CTL_POWER_D3hot from suspend time,
 	 * so userspace apps are blocked from touching us
@@ -713,6 +728,8 @@ int snd_soc_resume(struct device *dev)
 	struct snd_soc_card *card = dev_get_drvdata(dev);
 	struct snd_soc_component *component;
 
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
+
 	/* If the card is not initialized yet there is nothing to do */
 	if (!card->instantiated)
 		return 0;
@@ -732,6 +749,7 @@ EXPORT_SYMBOL_GPL(snd_soc_resume);
 
 static void soc_resume_init(struct snd_soc_card *card)
 {
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
 	/* deferred resume work */
 	INIT_WORK(&card->deferred_resume_work, soc_resume_deferred);
 }
@@ -740,6 +758,7 @@ static void soc_resume_init(struct snd_soc_card *card)
 #define snd_soc_resume NULL
 static inline void soc_resume_init(struct snd_soc_card *card)
 {
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
 }
 #endif
 
@@ -852,6 +871,8 @@ static int soc_dai_link_sanity_check(struct snd_soc_card *card,
 	int i;
 	struct snd_soc_dai_link_component *cpu, *codec, *platform;
 
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
+
 	for_each_link_codecs(link, i, codec) {
 		/*
 		 * Codec must be specified by 1 of name or OF node,
@@ -958,6 +979,7 @@ static int soc_dai_link_sanity_check(struct snd_soc_card *card,
 void snd_soc_remove_pcm_runtime(struct snd_soc_card *card,
 				struct snd_soc_pcm_runtime *rtd)
 {
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
 	lockdep_assert_held(&client_mutex);
 
 	/* release machine specific resources */
@@ -990,6 +1012,8 @@ int snd_soc_add_pcm_runtime(struct snd_soc_card *card,
 	struct snd_soc_dai_link_component *codec, *platform, *cpu;
 	struct snd_soc_component *component;
 	int i, ret;
+
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
 
 	lockdep_assert_held(&client_mutex);
 
@@ -1061,6 +1085,8 @@ static int soc_init_pcm_runtime(struct snd_soc_card *card,
 	struct snd_soc_component *component;
 	int ret, num, i;
 
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
+
 	/* set default power off timeout */
 	rtd->pmdown_time = pmdown_time;
 
@@ -1122,6 +1148,8 @@ static void soc_set_name_prefix(struct snd_soc_card *card,
 	const char *str;
 	int ret, i;
 
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
+
 	for (i = 0; i < card->num_configs; i++) {
 		struct snd_soc_codec_conf *map = &card->codec_conf[i];
 
@@ -1170,6 +1198,8 @@ static int soc_probe_component(struct snd_soc_card *card,
 	struct snd_soc_dai *dai;
 	int probed = 0;
 	int ret;
+
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
 
 	if (!strcmp(component->name, "snd-soc-dummy"))
 		return 0;
@@ -1272,6 +1302,8 @@ static void soc_remove_link_dais(struct snd_soc_card *card)
 	struct snd_soc_pcm_runtime *rtd;
 	int order;
 
+	printk("%s: pcm_debug\n", __func__);
+
 	for_each_comp_order(order) {
 		for_each_card_rtds(card, rtd) {
 			/* remove all rtd connected DAIs in good order */
@@ -1284,6 +1316,8 @@ static int soc_probe_link_dais(struct snd_soc_card *card)
 {
 	struct snd_soc_pcm_runtime *rtd;
 	int order, ret;
+
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
 
 	for_each_comp_order(order) {
 		for_each_card_rtds(card, rtd) {
@@ -1308,6 +1342,8 @@ static void soc_remove_link_components(struct snd_soc_card *card)
 	struct snd_soc_pcm_runtime *rtd;
 	int i, order;
 
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
+
 	for_each_comp_order(order) {
 		for_each_card_rtds(card, rtd) {
 			for_each_rtd_components(rtd, i, component) {
@@ -1325,6 +1361,8 @@ static int soc_probe_link_components(struct snd_soc_card *card)
 	struct snd_soc_component *component;
 	struct snd_soc_pcm_runtime *rtd;
 	int i, ret, order;
+
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
 
 	for_each_comp_order(order) {
 		for_each_card_rtds(card, rtd) {
@@ -1346,6 +1384,8 @@ static void soc_unbind_aux_dev(struct snd_soc_card *card)
 {
 	struct snd_soc_component *component, *_component;
 
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
+
 	for_each_card_auxs_safe(card, component, _component) {
 		/* for snd_soc_component_init() */
 		snd_soc_component_set_aux(component, NULL);
@@ -1358,6 +1398,8 @@ static int soc_bind_aux_dev(struct snd_soc_card *card)
 	struct snd_soc_component *component;
 	struct snd_soc_aux_dev *aux;
 	int i;
+
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
 
 	for_each_card_pre_auxs(card, i, aux) {
 		/* codecs, usually analog devices */
@@ -1379,6 +1421,8 @@ static int soc_probe_aux_devices(struct snd_soc_card *card)
 	int order;
 	int ret;
 
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
+
 	for_each_comp_order(order) {
 		for_each_card_auxs(card, component) {
 			if (component->driver->probe_order != order)
@@ -1397,6 +1441,8 @@ static void soc_remove_aux_devices(struct snd_soc_card *card)
 {
 	struct snd_soc_component *comp, *_comp;
 	int order;
+
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
 
 	for_each_comp_order(order) {
 		for_each_card_auxs_safe(card, comp, _comp) {
@@ -1536,6 +1582,8 @@ static void append_dmi_string(struct snd_soc_card *card, const char *str)
 	size_t dst_len = sizeof(card->dmi_longname);
 	size_t len;
 
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
+
 	len = strlen(dst);
 	snprintf(dst + len, dst_len - len, "-%s", str);
 
@@ -1578,6 +1626,8 @@ static void append_dmi_string(struct snd_soc_card *card, const char *str)
 int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour)
 {
 	const char *vendor, *product, *product_version, *board;
+
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
 
 	if (card->long_name)
 		return 0; /* long name already set by driver or from DMI */
@@ -1636,6 +1686,8 @@ static void soc_check_tplg_fes(struct snd_soc_card *card)
 	const struct snd_soc_component_driver *comp_drv;
 	struct snd_soc_dai_link *dai_link;
 	int i;
+
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
 
 	for_each_component(component) {
 
@@ -1766,6 +1818,8 @@ static void soc_cleanup_card_resources(struct snd_soc_card *card)
 {
 	struct snd_soc_pcm_runtime *rtd, *n;
 
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
+
 	if (card->snd_card)
 		snd_card_disconnect_sync(card->snd_card);
 
@@ -1796,6 +1850,8 @@ static void soc_cleanup_card_resources(struct snd_soc_card *card)
 
 static void snd_soc_unbind_card(struct snd_soc_card *card, bool unregister)
 {
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
+
 	if (card->instantiated) {
 		card->instantiated = false;
 		snd_soc_flush_all_delayed_work(card);
@@ -1815,6 +1871,8 @@ static int snd_soc_bind_card(struct snd_soc_card *card)
 	struct snd_soc_component *component;
 	struct snd_soc_dai_link *dai_link;
 	int ret, i;
+
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
 
 	mutex_lock(&client_mutex);
 	mutex_lock_nested(&card->mutex, SND_SOC_CARD_CLASS_INIT);
@@ -1984,6 +2042,8 @@ static int soc_probe(struct platform_device *pdev)
 {
 	struct snd_soc_card *card = platform_get_drvdata(pdev);
 
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
+
 	/*
 	 * no card, so machine driver should be registering card
 	 * we should not be here in that case so ret error
@@ -2008,6 +2068,8 @@ int snd_soc_poweroff(struct device *dev)
 
 	if (!card->instantiated)
 		return 0;
+
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
 
 	/*
 	 * Flush out pmdown_time work - we actually do want to run it
@@ -2093,6 +2155,8 @@ static int snd_soc_add_controls(struct snd_card *card, struct device *dev,
 {
 	int err, i;
 
+	printk("%s: pcm_debug id %s\n", __func__, card->id);
+
 	for (i = 0; i < num_controls; i++) {
 		const struct snd_kcontrol_new *control = &controls[i];
 
@@ -2122,6 +2186,8 @@ int snd_soc_add_component_controls(struct snd_soc_component *component,
 {
 	struct snd_card *card = component->card->snd_card;
 
+	printk("%s: pcm_debug id %s\n", __func__, card->id);
+
 	return snd_soc_add_controls(card, component->dev, controls,
 			num_controls, component->name_prefix, component);
 }
@@ -2141,7 +2207,7 @@ int snd_soc_add_card_controls(struct snd_soc_card *soc_card,
 	const struct snd_kcontrol_new *controls, int num_controls)
 {
 	struct snd_card *card = soc_card->snd_card;
-
+	printk("%s: pcm_debug id %s\n", __func__, card->id);
 	return snd_soc_add_controls(card, soc_card->dev, controls, num_controls,
 			NULL, soc_card);
 }
@@ -2161,7 +2227,7 @@ int snd_soc_add_dai_controls(struct snd_soc_dai *dai,
 	const struct snd_kcontrol_new *controls, int num_controls)
 {
 	struct snd_card *card = dai->component->card->snd_card;
-
+	printk("%s: pcm_debug id %s\n", __func__, card->id);
 	return snd_soc_add_controls(card, dai->dev, controls, num_controls,
 			NULL, dai);
 }
@@ -2177,6 +2243,8 @@ int snd_soc_register_card(struct snd_soc_card *card)
 {
 	if (!card->name || !card->dev)
 		return -EINVAL;
+
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
 
 	dev_set_drvdata(card->dev, card);
 
@@ -2208,6 +2276,7 @@ EXPORT_SYMBOL_GPL(snd_soc_register_card);
  */
 int snd_soc_unregister_card(struct snd_soc_card *card)
 {
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
 	mutex_lock(&client_mutex);
 	snd_soc_unbind_card(card, true);
 	mutex_unlock(&client_mutex);
@@ -2430,6 +2499,8 @@ static void snd_soc_try_rebind_card(void)
 {
 	struct snd_soc_card *card, *c;
 
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
+
 	list_for_each_entry_safe(card, c, &unbind_card_list, list)
 		if (!snd_soc_bind_card(card))
 			list_del(&card->list);
@@ -2438,6 +2509,8 @@ static void snd_soc_try_rebind_card(void)
 static void snd_soc_del_component_unlocked(struct snd_soc_component *component)
 {
 	struct snd_soc_card *card = component->card;
+
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
 
 	snd_soc_unregister_dais(component);
 
@@ -2593,6 +2666,8 @@ int snd_soc_of_parse_card_name(struct snd_soc_card *card,
 	struct device_node *np;
 	int ret;
 
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
+
 	if (!card->dev) {
 		pr_err("card->dev is not set before calling %s\n", __func__);
 		return -EINVAL;
@@ -2631,6 +2706,8 @@ int snd_soc_of_parse_audio_simple_widgets(struct snd_soc_card *card,
 	struct snd_soc_dapm_widget *widgets;
 	const char *template, *wname;
 	int i, j, num_widgets, ret;
+
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
 
 	num_widgets = of_property_count_strings(np, propname);
 	if (num_widgets < 0) {
@@ -2712,6 +2789,8 @@ int snd_soc_of_get_slot_mask(struct device_node *np,
 	const __be32 *of_slot_mask = of_get_property(np, prop_name, &val);
 	int i;
 
+	printk("%s: pcm_debug\n", __func__);
+
 	if (!of_slot_mask)
 		return 0;
 	val /= sizeof(u32);
@@ -2731,6 +2810,8 @@ int snd_soc_of_parse_tdm_slot(struct device_node *np,
 {
 	u32 val;
 	int ret;
+
+	printk("%s: pcm_debug\n", __func__);
 
 	if (tx_mask)
 		snd_soc_of_get_slot_mask(np, "dai-tdm-slot-tx-mask", tx_mask);
@@ -2767,6 +2848,8 @@ void snd_soc_of_parse_node_prefix(struct device_node *np,
 	const char *str;
 	int ret;
 
+	printk("%s: pcm_debug\n", __func__);
+
 	ret = of_property_read_string(np, propname, &str);
 	if (ret < 0) {
 		/* no prefix is not error */
@@ -2785,6 +2868,8 @@ int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
 	int num_routes;
 	struct snd_soc_dapm_route *routes;
 	int i, ret;
+
+	printk("%s: pcm_debug card name: %s\n", __func__, card->name);
 
 	num_routes = of_property_count_strings(np, propname);
 	if (num_routes < 0 || num_routes & 1) {
@@ -2808,6 +2893,7 @@ int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
 		return -ENOMEM;
 	}
 
+	printk("%s: pcm_debug card name: %s num_routes: %d\n", __func__, card->name, num_routes);
 	for (i = 0; i < num_routes; i++) {
 		ret = of_property_read_string_index(np, propname,
 			2 * i, &routes[i].sink);
@@ -2825,6 +2911,8 @@ int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
 				propname, (2 * i) + 1, ret);
 			return -EINVAL;
 		}
+
+		printk("%s: pcm_debug card name: %s route i %d src %s sink %s\n", __func__, card->name, i, routes[i].source, routes[i].sink);
 	}
 
 	card->num_of_dapm_routes = num_routes;
@@ -2839,6 +2927,8 @@ int snd_soc_of_parse_aux_devs(struct snd_soc_card *card, const char *propname)
 	struct device_node *node = card->dev->of_node;
 	struct snd_soc_aux_dev *aux;
 	int num, i;
+
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
 
 	num = of_count_phandle_with_args(node, propname, NULL);
 	if (num == -ENOENT) {

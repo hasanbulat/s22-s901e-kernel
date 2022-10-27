@@ -70,6 +70,8 @@ int devm_snd_soc_register_component(struct device *dev,
 	const struct snd_soc_component_driver **ptr;
 	int ret;
 
+	printk("%s: pcm_debug enter\n", __func__);
+
 	ptr = devres_alloc(devm_component_release, sizeof(*ptr), GFP_KERNEL);
 	if (!ptr)
 		return -ENOMEM;
