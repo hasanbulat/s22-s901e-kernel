@@ -547,6 +547,7 @@ EXPORT_SYMBOL_GPL(platform_device_add_properties);
  * This is part 2 of platform_device_register(), though may be called
  * separately _iff_ pdev was allocated by platform_device_alloc().
  */
+void platform_dev_added_hook(struct platform_device *pdev);
 int platform_device_add(struct platform_device *pdev)
 {
 	u32 i;
@@ -612,9 +613,7 @@ int platform_device_add(struct platform_device *pdev)
 
 	ret = device_add(&pdev->dev);
 	if (ret == 0) {
-		if (pdev->name != NULL && strstr(pdev->name, "macro")) {
-			printk("%s: ===== macro pdev\n", __func__);
-		}
+		platform_dev_added_hook(pdev);
 		return ret;
 	}
 

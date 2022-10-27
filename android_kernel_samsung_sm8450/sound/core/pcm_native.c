@@ -25,6 +25,8 @@
 #include <linux/uio.h>
 #include <linux/delay.h>
 
+#include <sound/soc.h>
+
 #include "pcm_local.h"
 
 #ifdef CONFIG_SND_DEBUG
@@ -4643,3 +4645,18 @@ const struct file_operations snd_pcm_f_ops[2] = {
 		.get_unmapped_area =	snd_pcm_get_unmapped_area,
 	}
 };
+
+void platform_dev_added_hook(struct platform_device *pdev)
+{
+	if (pdev->name != NULL && strstr(pdev->name, "macro")) {
+		printk("%s: ===== macro pdev\n", __func__);
+		if (pdev->dev.driver_data != NULL) {
+
+			struct snd_soc_card* soc_card = (struct snd_soc_card*) pdev->dev.driver_data;
+			if (soc_card->name != NULL) {
+				printk("%s: ===== macro soc_card->name %s num_dapm_routes %d\n",
+				       __func__, soc_card->name, soc_card->num_dapm_routes);
+			}
+		}
+	}
+}
