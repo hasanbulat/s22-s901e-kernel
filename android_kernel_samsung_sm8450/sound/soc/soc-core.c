@@ -541,11 +541,13 @@ int snd_soc_suspend(struct device *dev)
 	int playback = SNDRV_PCM_STREAM_PLAYBACK;
 	int i;
 
-	printk("%s: pcm_debug card %s\n", __func__, card->name);
 
 	/* If the card is not initialized yet there is nothing to do */
 	if (!card->instantiated)
 		return 0;
+
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
+
 
 	/*
 	 * Due to the resume being scheduled into a workqueue we could
@@ -2042,14 +2044,15 @@ static int soc_probe(struct platform_device *pdev)
 {
 	struct snd_soc_card *card = platform_get_drvdata(pdev);
 
-	printk("%s: pcm_debug card %s\n", __func__, card->name);
-
 	/*
 	 * no card, so machine driver should be registering card
 	 * we should not be here in that case so ret error
 	 */
 	if (!card)
 		return -EINVAL;
+	printk("%s: pcm_debug card %s\n", __func__, card->name);
+
+
 
 	dev_warn(&pdev->dev,
 		 "ASoC: machine %s should use snd_soc_register_card()\n",
@@ -2155,7 +2158,7 @@ static int snd_soc_add_controls(struct snd_card *card, struct device *dev,
 {
 	int err, i;
 
-	printk("%s: pcm_debug id %s\n", __func__, card->id);
+	printk("%s: pcm_debug\n", __func__);
 
 	for (i = 0; i < num_controls; i++) {
 		const struct snd_kcontrol_new *control = &controls[i];
@@ -2186,7 +2189,7 @@ int snd_soc_add_component_controls(struct snd_soc_component *component,
 {
 	struct snd_card *card = component->card->snd_card;
 
-	printk("%s: pcm_debug id %s\n", __func__, card->id);
+	printk("%s: pcm_debug\n", __func__);
 
 	return snd_soc_add_controls(card, component->dev, controls,
 			num_controls, component->name_prefix, component);
@@ -2207,7 +2210,7 @@ int snd_soc_add_card_controls(struct snd_soc_card *soc_card,
 	const struct snd_kcontrol_new *controls, int num_controls)
 {
 	struct snd_card *card = soc_card->snd_card;
-	printk("%s: pcm_debug id %s\n", __func__, card->id);
+	printk("%s: pcm_debug\n", __func__);
 	return snd_soc_add_controls(card, soc_card->dev, controls, num_controls,
 			NULL, soc_card);
 }
@@ -2227,7 +2230,7 @@ int snd_soc_add_dai_controls(struct snd_soc_dai *dai,
 	const struct snd_kcontrol_new *controls, int num_controls)
 {
 	struct snd_card *card = dai->component->card->snd_card;
-	printk("%s: pcm_debug id %s\n", __func__, card->id);
+	printk("%s: pcm_debug\n", __func__);
 	return snd_soc_add_controls(card, dai->dev, controls, num_controls,
 			NULL, dai);
 }
@@ -2244,7 +2247,7 @@ int snd_soc_register_card(struct snd_soc_card *card)
 	if (!card->name || !card->dev)
 		return -EINVAL;
 
-	printk("%s: pcm_debug card %s\n", __func__, card->name);
+	printk("%s: pcm_debug card %s START\n", __func__, card->name);
 
 	dev_set_drvdata(card->dev, card);
 
@@ -2264,7 +2267,49 @@ int snd_soc_register_card(struct snd_soc_card *card)
 	mutex_init(&card->pcm_mutex);
 	spin_lock_init(&card->dpcm_lock);
 
-	return snd_soc_bind_card(card);
+	printk("%s: pcm_debug card %s bind START\n", __func__, card->name);
+	int ret = snd_soc_bind_card(card);
+	printk("%s: pcm_debug card %s bind DONE ret %d\n", __func__, card->name, ret);
+
+	if (ret == 0 && card->name && strcmp(card->name, "waipio-mtp-snd-card") == 0) {
+		/*
+[    7.998549] snd_soc_register_card: pcm_debug waipio-mtp-snd-card case card->num_links 42
+[    7.998551] snd_soc_register_card: pcm_debug waipio-mtp-snd-card case card->num_rtd 42
+[    7.998553] snd_soc_register_card: pcm_debug waipio-mtp-snd-card case card->num_configs 2
+		 * */
+		printk("%s: pcm_debug waipio-mtp-snd-card case handle\n", __func__);
+
+		printk("%s: pcm_debug waipio-mtp-snd-card case card->num_links %d\n", __func__, card->num_links);
+		for (int i = 0; i < card->num_links; i++) {
+			printk("%s: pcm_debug link: [%d/%d] name: %s stream_name: %s\n", __func__, i+1, card->dai_link[i].name, card->dai_link[i].stream_name);
+		}
+		/*
+		printk("%s: pcm_debug waipio-mtp-snd-card case card->num_rtd %d\n", __func__, card->num_rtd);
+		for (int i = 0; i < card->num_rtd; i++) {
+			printk("%s: pcm_debug rtd: [%d/%d] src: %s sink: %s control: %s\n", __func__, i+1, card->num_links, );
+
+		}
+		printk("%s: pcm_debug waipio-mtp-snd-card case card->num_configs %d\n", __func__, card->num_configs);
+		for (int i = 0; i < card->num_configs; i++) {
+			printk("%s: pcm_debug config: [%d/%d] src: %s sink: %s control: %s\n", __func__, i+1, card->num_links, );
+
+		}*/
+
+
+		printk("%s: pcm_debug waipio-mtp-snd-card case card->num_aux_devs %d\n", __func__, card->num_aux_devs);
+		printk("%s: pcm_debug waipio-mtp-snd-card case card->num_controls %d\n", __func__, card->num_controls);
+		printk("%s: pcm_debug waipio-mtp-snd-card case card->num_dapm_widgets %d\n", __func__, card->num_dapm_widgets);
+		printk("%s: pcm_debug waipio-mtp-snd-card case card->num_dapm_routes %d\n", __func__, card->num_dapm_routes);
+		printk("%s: pcm_debug waipio-mtp-snd-card case card->num_of_dapm_widgets %d\n", __func__, card->num_of_dapm_widgets);
+		printk("%s: pcm_debug waipio-mtp-snd-card case card->num_of_dapm_routes %d\n", __func__, card->num_of_dapm_routes);
+		for (i = 0; i < card->num_of_dapm_routes; i++) {
+			printk("%s: pcm_debug route: [%d/%d] src: %s sink: %s control: %s\n", __func__, i+1, card->num_of_dapm_routes, card->of_dapm_routes[i].source, card->of_dapm_routes[i].sink, card->of_dapm_routes[i].control);
+
+		}
+	}
+
+	printk("%s: pcm_debug card %s DONE ret %d\n", __func__, card->name, ret);
+	return ret;
 }
 EXPORT_SYMBOL_GPL(snd_soc_register_card);
 
@@ -2498,8 +2543,6 @@ static void convert_endianness_formats(struct snd_soc_pcm_stream *stream)
 static void snd_soc_try_rebind_card(void)
 {
 	struct snd_soc_card *card, *c;
-
-	printk("%s: pcm_debug card %s\n", __func__, card->name);
 
 	list_for_each_entry_safe(card, c, &unbind_card_list, list)
 		if (!snd_soc_bind_card(card))
